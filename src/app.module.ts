@@ -21,13 +21,10 @@ import { UsersModule } from './users/users.module';
       useFactory: async (
         configService: ConfigService,
       ): Promise<TypeOrmModuleOptions> => ({
-        type: 'sqlite',
-        database:
-          configService.get<string>('NODE_ENV') === 'test'
-            ? ':memory:'
-            : 'src/data/app.sqlite',
+        type: 'mysql',
+        url: configService.get<string>('DATABASE_URL'),
         entities: [User], // Use the imported User entity directly
-        synchronize: configService.get<string>('NODE_ENV') !== 'production', // Disable in prod
+        synchronize: true,
       }),
     }),
     UsersModule,
