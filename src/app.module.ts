@@ -2,21 +2,26 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { parse } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      synchronize: true,
-    })
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST', { infer: true }),
+        port: config.get<number>('DB_PORT', { infer: true }),
+        username: config.get<string>('DB_USERNAME', { infer: true }),
+        password: config.get<string>('DB_PASSWORD', { infer: true }),
+        database: config.get<string>('DB_NAME', { infer: true }),
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
