@@ -18,13 +18,19 @@ export class AuthService {
     return { token: this.jwtService.sign(payload) };
   }
 
-  async login(dto: LoginDto) {
-    const user = await this.usersService.findByEmail(dto.email);
-    const isPasswordValid = user && await bcrypt.compare(dto.password, user.password_hash);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-    const payload = { sub: user.user_id, role: user.role };
-    return { token: this.jwtService.sign(payload) };
+async login(dto: LoginDto) {
+  const user =
+    await this.usersService.findByEmail(dto.login) ??
+    await this.usersService.findByPhone(dto.login);
+
+  const isPasswordValid =
+    user && await bcrypt.compare(dto.password, user.password_hash);
+
+  if (!isPasswordValid) {
+    throw new UnauthorizedException('Invalid credentials');
   }
+
+  const payload = { sub: user.user_id, role: user.role };
+  return { token: this.jwtService.sign(payload) };
+}
 }
