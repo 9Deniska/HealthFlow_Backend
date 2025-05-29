@@ -21,11 +21,16 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepo.findOne({ where: { email } });
-  }
+async findByEmail(email: string) {
+  return this.usersRepo.findOne({ where: { email } });
+}
 
-  async findById(id: number): Promise<User | null> {
-    return this.usersRepo.findOne({ where: { user_id: id } });
-  }
+async findByPhone(phone: string) {
+  return this.usersRepo.findOne({ where: { phone } });
+}
+
+async findById(id: number): Promise<User | null> {
+  return this.usersRepo.findOne({ where: { user_id: id } });
+}
+
 }
