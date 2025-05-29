@@ -13,24 +13,35 @@ export class User {
   user_id: number;
 
   @Column()
-  first_name: string;
+  name: string;
 
   @Column()
-  last_name: string;
+  surname: string;
 
   @Column({ nullable: true })
-  middle_name?: string;
+  middlename?: string;
+
+  @Column()
+  date_of_birth: Date;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
+  phone: string;
+
+  @Column()
   password_hash: string;
 
   @Column({
-    type: 'enum',
     enum: UserRole,
     default: UserRole.CLIENT,
   })
   role: UserRole;
+
+  @Column({ nullable: true })
+  google_id?: string;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  registration_date: Date;
 }
