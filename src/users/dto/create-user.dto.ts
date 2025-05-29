@@ -1,5 +1,6 @@
 import { IsEmail, IsEnum, IsOptional, IsString, IsDateString } from 'class-validator';
 import { UserRole } from '../entities/user.entity';
+import { IsOldEnough } from '../../common/validators/is-old-enough.validator';
 
 export class CreateUserDto {
   @IsString()
@@ -13,6 +14,7 @@ export class CreateUserDto {
   middlename?: string;
 
   @IsDateString()
+  @IsOldEnough(16, { message: 'Користувачу повинно бути щонайменше 16 років' })
   date_of_birth: string;
 
   @IsEmail()

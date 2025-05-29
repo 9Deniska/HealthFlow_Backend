@@ -34,6 +34,7 @@ export class User {
   password_hash: string;
 
   @Column({
+    type: 'enum',
     enum: UserRole,
     default: UserRole.CLIENT,
   })
