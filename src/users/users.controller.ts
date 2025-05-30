@@ -1,28 +1,32 @@
-import { Controller, Get, Patch, Body, UseGuards, Req } from '@nestjs/common';
-import { UsersService } from './users.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Roles } from '../auth/decorator/roles.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
-import { Roles } from '../auth/decorator/roles.decorator';
 import { RequestWithUser } from '../common/interfaces/request-with-user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-
-  @Get('profile')
-  async getProfile(@Req() req: RequestWithUser) {
-    const userId = req.user.sub;
-    return this.usersService.findById(userId);
+  @Get('profile/:id')
+  async getProfile(@Param('id') id: number) {
+    return this.usersService.findById(id);
   }
 
-
-  @Patch('profile')
-  async updateProfile(@Req() req: RequestWithUser, @Body() dto: UpdateUserDto) {
-    const userId = req.user.sub;
-    return this.usersService.update(userId, dto);
+  @Patch('profile/:id')
+  async updateProfile(@Param('id') id: number, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(id, dto);
   }
 
   @Get('manager-dashboard')
