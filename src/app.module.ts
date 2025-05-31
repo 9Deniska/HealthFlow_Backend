@@ -3,15 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth/auth.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { DoctorsModule } from './doctors/doctors.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { UsersModule } from './users/users.module';
-import { ReviewsController } from './reviews/reviews.controller';
-import { RecordsController } from './records/records.controller';
-import { RecordsService } from './records/records.service';
-import { ReviewsService } from './reviews/reviews.service';
 
 @Module({
   imports: [
@@ -35,8 +33,10 @@ import { ReviewsService } from './reviews/reviews.service';
     DoctorsModule,
     DepartmentsModule,
     SpecializationsModule,
+    AppointmentsModule,
+    ReviewsModule,
   ],
-  controllers: [AppController, ReviewsController, RecordsController],
-  providers: [AppService, RecordsService, ReviewsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
