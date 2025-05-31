@@ -8,6 +8,10 @@ import { DepartmentsModule } from './departments/departments.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { UsersModule } from './users/users.module';
+import { ReviewsController } from './reviews/reviews.controller';
+import { RecordsController } from './records/records.controller';
+import { RecordsService } from './records/records.service';
+import { ReviewsService } from './reviews/reviews.service';
 
 @Module({
   imports: [
@@ -32,7 +36,7 @@ import { UsersModule } from './users/users.module';
     DepartmentsModule,
     SpecializationsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ReviewsController, RecordsController],
+  providers: [AppService, RecordsService, ReviewsService],
 })
 export class AppModule {}

@@ -31,14 +31,13 @@ export class DoctorsService {
     const userEntity = await this.usersService.create(createDoctorDto.user);
 
     const doctorData = {
-      user_id: userEntity.user_id,
-      user: userEntity,
-      specialization: createDoctorDto.specialization,
+      doctor_id: userEntity.user_id,
+      specialization_id: createDoctorDto.specialization_id,
       rating: createDoctorDto.rating,
       department_id: createDoctorDto.department_id,
     };
 
-    const doctor = this.doctorsRepo.create(doctorData);
+    const doctor = this.doctorsRepo.create(doctorData as Partial<Doctor>);
     return this.doctorsRepo.save(doctor);
   }
 

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Length,
   ValidateNested,
 } from 'class-validator';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
@@ -18,7 +19,8 @@ export class CreateDoctorDto {
 
   @IsString()
   @IsNotEmpty()
-  specialization: string;
+  @Length(1, 50)
+  specialization_id: string;
 
   @IsNumber()
   @IsOptional()
