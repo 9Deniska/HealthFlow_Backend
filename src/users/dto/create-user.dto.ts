@@ -1,6 +1,12 @@
-import { IsEmail, IsEnum, IsOptional, IsString, IsDateString } from 'class-validator';
-import { UserRole } from '../entities/user.entity';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { IsOldEnough } from '../../common/validators/is-old-enough.validator';
+import { UserRole } from '../entities/user.entity';
 
 export class CreateUserDto {
   @IsString()

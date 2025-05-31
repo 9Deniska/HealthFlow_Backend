@@ -1,27 +1,60 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import { DoctorsService } from '../doctors/doctors.service';
+import { CreateDoctorDto } from '../doctors/dto/create-doctor.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly doctorsService: DoctorsService,
+  ) {}
+
+  @Post('doctors')
+  async createDoctor(
+    @Body(new ValidationPipe()) createDoctorDto: CreateDoctorDto,
+  ) {
+    return this.doctorsService.create(createDoctorDto);
+  }
 
   @Get('profile/:id')
   async getProfile(@Param('id') id: number) {
     return this.usersService.findById(id);
+  }
+
+  @Get('doctors/')
+  async getDoctors() {
+    return this.doctorsService.findAll();
+  }
+
+  @Get('doctors/:id')
+  async getDoctor(@Param('id') id: number) {
+    return this.doctorsService.findOneById(id);
+  }
+
+  @Delete('doctors/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteDoctor(@Param('id') id: number): Promise<void> {
+    return this.doctorsService.remove(id);
   }
 
   @Patch('profile/:id')

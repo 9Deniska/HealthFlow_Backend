@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
@@ -19,7 +19,45 @@ export class UsersService {
       ...dto,
       password_hash: hash,
     });
-    return this.usersRepo.save(user);
+    try {
+      return await this.usersRepo.save(user);
+    } catch (error: unknown) {
+      let errorMessage = '';
+      let isDuplicateError = false;
+
+      if (error && typeof error === 'object') {
+        if (
+          ('code' in error &&
+            (error as { code?: string }).code === 'ER_DUP_ENTRY') ||
+          ('errno' in error && (error as { errno?: number }).errno === 1062)
+        ) {
+          isDuplicateError = true;
+        }
+        if (
+          'message' in error &&
+          typeof (error as { message?: unknown }).message === 'string'
+        ) {
+          errorMessage = (
+            (error as { message: string }).message || ''
+          ).toLowerCase();
+        }
+      }
+
+      if (isDuplicateError) {
+        if (errorMessage.includes('email')) {
+          throw new ConflictException('User with this email already exists.');
+        }
+        if (errorMessage.includes('phone')) {
+          throw new ConflictException(
+            'User with this phone number already exists.',
+          );
+        }
+        throw new ConflictException(
+          'A user with some of these details already exists.',
+        );
+      }
+      throw error;
+    }
   }
 
   async findByEmail(email: string) {

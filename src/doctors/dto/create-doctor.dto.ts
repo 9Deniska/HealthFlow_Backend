@@ -1,0 +1,38 @@
+import { Type } from 'class-transformer';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
+import { UserRole } from '../../users/entities/user.entity';
+
+export class CreateDoctorDto {
+  @ValidateNested()
+  @Type(() => CreateUserDto)
+  @IsNotEmpty()
+  user: CreateUserDto;
+
+  @IsString()
+  @IsNotEmpty()
+  specialization: string;
+
+  @IsNumber()
+  @IsOptional()
+  rating?: number;
+
+  @IsInt()
+  @IsOptional() // Department can be assigned later or might not exist for all doctors initially
+  department_id?: number | null;
+
+  constructor(partial: Partial<CreateDoctorDto>) {
+    Object.assign(this, partial);
+    // Ensure the role is set to DOCTOR for the user part
+    if (this.user) {
+      this.user.role = UserRole.DOCTOR;
+    }
+  }
+}

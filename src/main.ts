@@ -8,20 +8,20 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const config = new DocumentBuilder()
+  const documentBuilder = new DocumentBuilder()
     .setTitle('My Nest API')
     .setDescription('Example of NestJS + Swagger')
-    .setVersion('1.0.0')
-    .addBearerAuth()
-    .build();
+    .setVersion('1.0.0');
+
+  if (process.env.BYPASS_AUTH_FOR_SWAGGER !== 'true') {
+    documentBuilder.addBearerAuth();
+  }
+
+  const config = documentBuilder.build();
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api-docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  });
+  SwaggerModule.setup('api-docs', app, document);
 
   app.enableCors({
     origin: ['http://localhost:3000', 'http://localhost:5173'],
