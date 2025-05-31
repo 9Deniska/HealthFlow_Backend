@@ -46,6 +46,13 @@ export class UsersController {
     return this.doctorsService.findAll();
   }
 
+  @Get('doctors/specialization/:specialization_id')
+  async getDoctorsBySpecialization(
+    @Param('specialization_id') specialization_id: string,
+  ) {
+    return this.doctorsService.findAllBySpecializationId(specialization_id);
+  }
+
   @Get('doctors/:id')
   async getDoctor(@Param('id') id: number) {
     return this.doctorsService.findOneById(id);

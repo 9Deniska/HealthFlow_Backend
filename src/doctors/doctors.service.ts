@@ -56,6 +56,13 @@ export class DoctorsService {
     return doctor;
   }
 
+  async findAllBySpecializationId(specializationId: string): Promise<Doctor[]> {
+    return this.doctorsRepo.find({
+      where: { specialization_id: specializationId },
+      relations: ['user', 'department'],
+    });
+  }
+
   async remove(id: number): Promise<void> {
     const doctor = await this.findOneById(id);
     await this.doctorsRepo.remove(doctor);

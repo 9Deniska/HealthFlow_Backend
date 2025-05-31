@@ -1,0 +1,44 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
+import { MedicalRecord } from './entities/medical-record.entity';
+// import { CreateMedicalRecordDto } from './dto/create-medical-record.dto'; // If you add a create endpoint
+
+@Injectable()
+export class MedicalRecordsService {
+  constructor(
+    @InjectRepository(MedicalRecord)
+    private medicalRecordsRepo: Repository<MedicalRecord>,
+  ) {}
+
+  // If you add a POST /medical-card/add endpoint later
+  // async create(createMedicalRecordDto: CreateMedicalRecordDto): Promise<MedicalRecord> {
+  //   const medicalRecord = this.medicalRecordsRepo.create(createMedicalRecordDto);
+  //   return this.medicalRecordsRepo.save(medicalRecord);
+  // }
+
+  async findOne(id: number): Promise<MedicalRecord> {
+    const medicalRecord = await this.medicalRecordsRepo.findOne({
+      where: { medical_record_id: id },
+      relations: ['client', 'doctor', 'appointment'], // Load related entities
+    });
+    if (!medicalRecord) {
+      throw new NotFoundException(`Medical Record with ID ${id} not found`);
+    }
+    return medicalRecord;
+  }
+
+  async update(
+    id: number,
+    updateMedicalRecordDto: UpdateMedicalRecordDto,
+  ): Promise<MedicalRecord> {
+    const medicalRecord = await this.findOne(id); // findOne will throw if not found
+
+    // Merge the new data. Only fields present in DTO will be updated.
+    this.medicalRecordsRepo.merge(medicalRecord, updateMedicalRecordDto);
+    return this.medicalRecordsRepo.save(medicalRecord);
+  }
+
+  // Add findAll, remove methods if needed
+}

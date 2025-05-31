@@ -7,6 +7,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth/auth.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { DoctorsModule } from './doctors/doctors.module';
+import { MedicalRecordsModule } from './medical-records/medical-records.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { UsersModule } from './users/users.module';
@@ -35,6 +36,7 @@ import { UsersModule } from './users/users.module';
     SpecializationsModule,
     AppointmentsModule,
     ReviewsModule,
+    MedicalRecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
