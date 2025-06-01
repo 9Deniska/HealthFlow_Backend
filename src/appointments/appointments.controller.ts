@@ -16,7 +16,7 @@ import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 // Add RolesGuard and @Roles if needed for specific endpoints
 
-@Controller('records') // Path as per your request
+@Controller('appointments') // Path as per your request
 @UseGuards(JwtAuthGuard) // Example: Protect all appointment routes
 export class AppointmentsController {
   // Renaming to AppointmentsController

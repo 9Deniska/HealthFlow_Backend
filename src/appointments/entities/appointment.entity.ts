@@ -10,9 +10,8 @@ import { Doctor } from '../../doctors/entities/doctor.entity';
 import { User } from '../../users/entities/user.entity';
 
 export enum AppointmentStatus {
-  SCHEDULED = 'scheduled',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
+  BUSY = 'busy',
+  UNAVAILABLE = 'unavailable',
 }
 
 @Entity('Appointments') // Matches your table name
@@ -46,7 +45,7 @@ export class Appointment {
   @Column({
     type: 'enum',
     enum: AppointmentStatus,
-    default: AppointmentStatus.SCHEDULED,
+    default: AppointmentStatus.BUSY,
   })
   status: AppointmentStatus;
 
