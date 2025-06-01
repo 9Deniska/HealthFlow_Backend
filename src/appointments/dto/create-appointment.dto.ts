@@ -1,8 +1,6 @@
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
-  IsDecimal,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -32,21 +30,9 @@ export class CreateAppointmentDto {
   })
   start_time: string; // HH:MM
 
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-    message: 'end_time must be in HH:MM format',
-  })
-  end_time: string; // HH:MM
-
   @IsEnum(AppointmentStatus)
   @IsOptional()
   status?: AppointmentStatus;
-
-  @IsDecimal({ decimal_digits: '2' })
-  @IsNotEmpty()
-  @Type(() => String) // Ensure transformation for validation if needed from number
-  price: string; // Validated as decimal string, will be number in DB
 
   @IsBoolean()
   @IsOptional()
