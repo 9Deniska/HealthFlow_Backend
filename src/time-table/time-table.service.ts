@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { TimeTable } from './entities/time-table.entity';
 
 @Injectable()
@@ -17,13 +17,18 @@ export class TimeTableService {
       where.doctor_id = doctorId;
     }
     if (dateString) {
-      where.date = Equal(new Date(dateString));
+      // Parse YYYY-MM-DD string
+      const parts = dateString.split('-').map((part) => parseInt(part, 10));
+      if (parts.length === 3) {
+        where.date = dateString;
+      }
     }
 
-    return this.timeTableRepo.find({
+    const results = await this.timeTableRepo.find({
       where,
       relations: ['doctor'],
     });
+    return results;
   }
 
   // Add create, findOne, update, remove methods as needed in the future
