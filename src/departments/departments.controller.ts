@@ -14,11 +14,6 @@ export class DepartmentsController {
     return this.departmentsService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.departmentsService.findOne(id);
-  }
-
   @Get(':id/specializations')
   async findSpecializations(@Param('id') id: number) {
     return this.specializationsService.findAll(id);

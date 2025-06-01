@@ -35,6 +35,9 @@ export class DoctorsService {
       specialization_id: createDoctorDto.specialization_id,
       rating: createDoctorDto.rating,
       department_id: createDoctorDto.department_id,
+      experience_years: createDoctorDto.experience_years,
+      cabinet: createDoctorDto.cabinet,
+      consultation_price: createDoctorDto.consultation_price,
     };
 
     const doctor = this.doctorsRepo.create(doctorData as Partial<Doctor>);
@@ -54,13 +57,6 @@ export class DoctorsService {
       throw new NotFoundException(`Doctor with ID ${id} not found`);
     }
     return doctor;
-  }
-
-  async findAllBySpecializationId(specializationId: string): Promise<Doctor[]> {
-    return this.doctorsRepo.find({
-      where: { specialization_id: specializationId },
-      relations: ['user', 'department'],
-    });
   }
 
   async remove(id: number): Promise<void> {

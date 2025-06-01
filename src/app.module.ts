@@ -7,9 +7,11 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth/auth.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { DoctorsModule } from './doctors/doctors.module';
+import { FavoriteDoctorsModule } from './favorite-doctors/favorite-doctors.module';
 import { MedicalRecordsModule } from './medical-records/medical-records.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SpecializationsModule } from './specializations/specializations.module';
+import { TimeTableModule } from './time-table/time-table.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -37,6 +39,8 @@ import { UsersModule } from './users/users.module';
     AppointmentsModule,
     ReviewsModule,
     MedicalRecordsModule,
+    TimeTableModule,
+    FavoriteDoctorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

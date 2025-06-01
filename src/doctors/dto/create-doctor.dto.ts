@@ -30,6 +30,19 @@ export class CreateDoctorDto {
   @IsOptional() // Department can be assigned later or might not exist for all doctors initially
   department_id?: number | null;
 
+  @IsNumber()
+  @IsOptional()
+  experience_years?: number;
+
+  @IsString()
+  @IsOptional()
+  @Length(1, 255)
+  cabinet?: string;
+
+  @IsNumber()
+  @IsOptional()
+  consultation_price?: number;
+
   constructor(partial: Partial<CreateDoctorDto>) {
     Object.assign(this, partial);
     // Ensure the role is set to DOCTOR for the user part

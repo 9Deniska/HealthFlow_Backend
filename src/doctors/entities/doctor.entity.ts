@@ -7,6 +7,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Department } from '../../departments/entities/department.entity';
+// Removed FavoriteDoctor import
 import { User } from '../../users/entities/user.entity';
 // Assuming you have a Specialization entity, import it here
 // import { Specialization } from '../../specializations/entities/specialization.entity';
@@ -46,4 +47,13 @@ export class Doctor {
 
   @Column({ type: 'bigint', unsigned: true, nullable: true }) // Matches DDL
   department_id: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  experience_years: number | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  cabinet: string | null;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  consultation_price: number | null;
 }

@@ -6,8 +6,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
   ValidationPipe,
@@ -18,6 +20,7 @@ import { RolesGuard } from '../auth/guard/roles.guard';
 import { RequestWithUser } from '../common/interfaces/request-with-user.interface';
 import { DoctorsService } from '../doctors/doctors.service';
 import { CreateDoctorDto } from '../doctors/dto/create-doctor.dto';
+import { FavoriteDoctorsService } from '../favorite-doctors/favorite-doctors.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -27,6 +30,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly doctorsService: DoctorsService,
+    private readonly favoriteDoctorsService: FavoriteDoctorsService,
   ) {}
 
   @Post('doctors')
@@ -44,13 +48,6 @@ export class UsersController {
   @Get('doctors/')
   async getDoctors() {
     return this.doctorsService.findAll();
-  }
-
-  @Get('doctors/specialization/:specialization_id')
-  async getDoctorsBySpecialization(
-    @Param('specialization_id') specialization_id: string,
-  ) {
-    return this.doctorsService.findAllBySpecializationId(specialization_id);
   }
 
   @Get('doctors/:id')
@@ -94,5 +91,28 @@ export class UsersController {
       message: 'Панель лікаря',
       userId: req.user.sub,
     };
+  }
+
+  @Get('fav/:id')
+  async getFavoriteDoctors(@Param('id', ParseIntPipe) id: number) {
+    return this.favoriteDoctorsService.findFavoritesByClientId(id);
+  }
+
+  @Post('fav/add')
+  @HttpCode(HttpStatus.CREATED)
+  async addFavoriteDoctor(
+    @Query('clientId', ParseIntPipe) clientId: number,
+    @Query('doctorId', ParseIntPipe) doctorId: number,
+  ) {
+    return this.favoriteDoctorsService.addFavorite(clientId, doctorId);
+  }
+
+  @Delete('fav/delete')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeFavoriteDoctor(
+    @Query('clientId', ParseIntPipe) clientId: number,
+    @Query('doctorId', ParseIntPipe) doctorId: number,
+  ): Promise<void> {
+    return this.favoriteDoctorsService.removeFavorite(clientId, doctorId);
   }
 }
