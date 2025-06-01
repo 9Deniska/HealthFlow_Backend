@@ -11,13 +11,6 @@ export class MedicalRecordsService {
     @InjectRepository(MedicalRecord)
     private medicalRecordsRepo: Repository<MedicalRecord>,
   ) {}
-
-  // If you add a POST /medical-card/add endpoint later
-  // async create(createMedicalRecordDto: CreateMedicalRecordDto): Promise<MedicalRecord> {
-  //   const medicalRecord = this.medicalRecordsRepo.create(createMedicalRecordDto);
-  //   return this.medicalRecordsRepo.save(medicalRecord);
-  // }
-
   async findOne(id: number): Promise<MedicalRecord> {
     const medicalRecord = await this.medicalRecordsRepo.findOne({
       where: { medical_record_id: id },
@@ -27,6 +20,13 @@ export class MedicalRecordsService {
       throw new NotFoundException(`Medical Record with ID ${id} not found`);
     }
     return medicalRecord;
+  }
+
+  async findAllByClientId(clientId: number): Promise<MedicalRecord[]> {
+    return this.medicalRecordsRepo.find({
+      where: { client_id: clientId },
+      relations: ['client', 'doctor', 'appointment'], // Load related entities
+    });
   }
 
   async update(
