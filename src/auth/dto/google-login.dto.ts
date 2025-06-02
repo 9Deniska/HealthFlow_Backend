@@ -8,11 +8,7 @@ import {
 export class GoogleLoginDto {
   @IsString()
   @IsNotEmpty()
-  clientId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  credential: string; // This is the ID token from Google
+  accessToken: string;
 
   @IsOptional()
   @IsDateString()
