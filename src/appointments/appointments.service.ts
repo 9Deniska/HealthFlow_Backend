@@ -64,6 +64,7 @@ export class AppointmentsService {
       ...createAppointmentDto,
       end_time: endTime, // Add calculated end_time
       price: consultationPrice, // Use fetched consultation_price
+      is_paid: false,
     });
     return this.appointmentsRepo.save(appointment);
   }
@@ -92,10 +93,13 @@ export class AppointmentsService {
     // }
   }
 
-  async markAsPaid(orderId: string): Promise<void> {
+async markAsPaid(appointmentId: string): Promise<void> {
     await this.appointmentsRepo.update(
-      { appointment_id: +orderId },
-      { is_paid: true }
+      { appointment_id: +appointmentId },
+      {
+        is_paid: true,
+        payment_date: new Date(),
+      },
     );
   }
 

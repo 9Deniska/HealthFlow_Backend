@@ -24,8 +24,8 @@ export class LiqpayController {
     const decoded = JSON.parse(Buffer.from(data, 'base64').toString('utf-8'));
 
     if (decoded.status === 'success' || decoded.status === 'sandbox') {
-      const orderId = decoded.order_id;
-      await this.appointmentsService.markAsPaid(orderId);
+      const appointmentId = decoded.order_id;
+      await this.appointmentsService.markAsPaid(appointmentId);
     }
 
     return { status: 'ok' };
