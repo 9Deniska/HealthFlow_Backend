@@ -2,8 +2,10 @@ import {
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateIf,
 } from 'class-validator';
 import { IsOldEnough } from '../../common/validators/is-old-enough.validator';
 import { UserRole } from '../entities/user.entity';
@@ -21,16 +23,18 @@ export class CreateUserDto {
 
   @IsDateString()
   @IsOldEnough(16, { message: 'Користувачу повинно бути щонайменше 16 років' })
-  date_of_birth: string;
+  date_of_birth?: string;
 
   @IsEmail()
   email: string;
 
   @IsString()
-  phone: string;
+  phone?: string;
 
+  @ValidateIf((o) => !o.google_id)
+  @IsNotEmpty({ message: 'Password is required when not using Google login' })
   @IsString()
-  password: string;
+  password?: string;
 
   @IsOptional()
   @IsEnum(UserRole)

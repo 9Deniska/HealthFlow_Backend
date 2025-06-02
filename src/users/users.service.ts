@@ -1,10 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +14,30 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
-    const hash = await bcrypt.hash(dto.password, 10);
-    const user = this.usersRepo.create({
-      ...dto,
-      password_hash: hash,
-    });
+    let hash: string | undefined = undefined;
+    if (dto.password) {
+      hash = await bcrypt.hash(dto.password, 10);
+    }
+
+    const userPayloadForCreation: DeepPartial<User> = {
+      name: dto.name,
+      surname: dto.surname,
+      middlename: dto.middlename,
+      date_of_birth: dto.date_of_birth
+        ? new Date(dto.date_of_birth)
+        : undefined,
+      email: dto.email,
+      phone: dto.phone,
+      role: dto.role,
+      google_id: dto.google_id,
+      password_hash:
+        hash ||
+        (dto.google_id
+          ? 'google_signed_up_user_placeholder_hash'
+          : 'placeholder_for_non_google_missing_password'),
+    };
+
+    const user = this.usersRepo.create(userPayloadForCreation);
     try {
       return await this.usersRepo.save(user);
     } catch (error: unknown) {
@@ -68,8 +87,16 @@ export class UsersService {
     return this.usersRepo.findOne({ where: { phone } });
   }
 
+  async findByGoogleId(googleId: string): Promise<User | null> {
+    return this.usersRepo.findOne({ where: { google_id: googleId } });
+  }
+
   async findById(id: number): Promise<User | null> {
     return this.usersRepo.findOne({ where: { user_id: id } });
+  }
+
+  async findAllClients(): Promise<User[]> {
+    return this.usersRepo.find({ where: { role: UserRole.CLIENT } });
   }
 
   async update(userId: number, dto: UpdateUserDto): Promise<User> {
@@ -90,6 +117,7 @@ export class UsersService {
       user.date_of_birth = new Date(dto.date_of_birth);
     if (dto.email !== undefined) user.email = dto.email;
     if (dto.phone !== undefined) user.phone = dto.phone;
+    if (dto.google_id !== undefined) user.google_id = dto.google_id;
 
     return this.usersRepo.save(user);
   }
