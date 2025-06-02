@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
 import { MedicalRecord } from './entities/medical-record.entity';
-// import { CreateMedicalRecordDto } from './dto/create-medical-record.dto'; // If you add a create endpoint
 
 @Injectable()
 export class MedicalRecordsService {
@@ -11,6 +11,18 @@ export class MedicalRecordsService {
     @InjectRepository(MedicalRecord)
     private medicalRecordsRepo: Repository<MedicalRecord>,
   ) {}
+
+  async create(
+    createMedicalRecordDto: CreateMedicalRecordDto,
+  ): Promise<MedicalRecord> {
+    // TODO: Add validation if client_id, doctor_id, appointment_id exist
+    // For example, by injecting and using UsersService, DoctorsService, AppointmentsService
+    const newMedicalRecord = this.medicalRecordsRepo.create(
+      createMedicalRecordDto,
+    );
+    return this.medicalRecordsRepo.save(newMedicalRecord);
+  }
+
   async findOne(id: number): Promise<MedicalRecord> {
     const medicalRecord = await this.medicalRecordsRepo.findOne({
       where: { medical_record_id: id },

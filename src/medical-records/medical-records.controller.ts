@@ -5,10 +5,12 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Post,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
 import { MedicalRecordsService } from './medical-records.service';
 
@@ -16,6 +18,13 @@ import { MedicalRecordsService } from './medical-records.service';
 @UseGuards(JwtAuthGuard)
 export class MedicalRecordsController {
   constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
+
+  @Post('add')
+  async create(
+    @Body(new ValidationPipe()) createMedicalRecordDto: CreateMedicalRecordDto,
+  ) {
+    return this.medicalRecordsService.create(createMedicalRecordDto);
+  }
 
   @Get(':id')
   async findAllMedicalCardsForClient(
