@@ -93,7 +93,7 @@ export class AppointmentsService {
     // }
   }
 
-  async markAsPaid(appointmentId: string): Promise<void> {
+  async markAsPaid(appointmentId: string): Promise<{ success: boolean; message: string }> {
       const id = parseInt(appointmentId, 10);
       if (isNaN(id)) {
           throw new BadRequestException('Invalid appointment ID format');
@@ -118,6 +118,8 @@ export class AppointmentsService {
               payment_date: new Date(),
           },
       );
+
+      return { success: true, message: `Appointment ${id} marked as paid` };
   }
 
 }
