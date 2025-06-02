@@ -92,5 +92,11 @@ export class AppointmentsService {
     // }
   }
 
-  // Add update method as needed
+  async markAsPaid(orderId: string): Promise<void> {
+    await this.appointmentsRepo.update(
+      { appointment_id: +orderId },
+      { is_paid: true }
+    );
+  }
+
 }
