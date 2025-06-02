@@ -13,6 +13,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { SpecializationsModule } from './specializations/specializations.module';
 import { TimeTableModule } from './time-table/time-table.module';
 import { UsersModule } from './users/users.module';
+import { LiqpayModule } from './liqpay/liqpay.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UsersModule } from './users/users.module';
     MedicalRecordsModule,
     TimeTableModule,
     FavoriteDoctorsModule,
+    LiqpayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

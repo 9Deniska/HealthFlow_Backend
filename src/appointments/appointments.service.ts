@@ -64,6 +64,7 @@ export class AppointmentsService {
       ...createAppointmentDto,
       end_time: endTime, // Add calculated end_time
       price: consultationPrice, // Use fetched consultation_price
+      is_paid: false,
     });
     return this.appointmentsRepo.save(appointment);
   }
@@ -92,5 +93,33 @@ export class AppointmentsService {
     // }
   }
 
-  // Add update method as needed
+  async markAsPaid(appointmentId: string): Promise<{ success: boolean; message: string }> {
+      const id = parseInt(appointmentId, 10);
+      if (isNaN(id)) {
+          throw new BadRequestException('Invalid appointment ID format');
+      }
+
+      const appointment = await this.appointmentsRepo.findOne({
+          where: { appointment_id: id }
+      });
+
+      if (!appointment) {
+          throw new NotFoundException(`Appointment with ID ${id} not found`);
+      }
+
+      if (appointment.is_paid) {
+          throw new BadRequestException(`Appointment with ID ${id} is already paid`);
+      }
+
+      await this.appointmentsRepo.update(
+          { appointment_id: id },
+          {
+              is_paid: true,
+              payment_date: new Date(),
+          },
+      );
+
+      return { success: true, message: `Appointment ${id} marked as paid` };
+  }
+
 }
