@@ -93,14 +93,31 @@ export class AppointmentsService {
     // }
   }
 
-async markAsPaid(appointmentId: string): Promise<void> {
-    await this.appointmentsRepo.update(
-      { appointment_id: +appointmentId },
-      {
-        is_paid: true,
-        payment_date: new Date(),
-      },
-    );
+  async markAsPaid(appointmentId: string): Promise<void> {
+      const id = parseInt(appointmentId, 10);
+      if (isNaN(id)) {
+          throw new BadRequestException('Invalid appointment ID format');
+      }
+
+      const appointment = await this.appointmentsRepo.findOne({
+          where: { appointment_id: id }
+      });
+
+      if (!appointment) {
+          throw new NotFoundException(`Appointment with ID ${id} not found`);
+      }
+
+      if (appointment.is_paid) {
+          throw new BadRequestException(`Appointment with ID ${id} is already paid`);
+      }
+
+      await this.appointmentsRepo.update(
+          { appointment_id: id },
+          {
+              is_paid: true,
+              payment_date: new Date(),
+          },
+      );
   }
 
 }

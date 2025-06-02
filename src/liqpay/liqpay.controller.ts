@@ -14,21 +14,26 @@ export class LiqpayController {
   @Post('callback')
   @ApiBody({ type: LiqpayCallbackDto })
   async handleCallback(@Body() body: LiqpayCallbackDto) {
-    const { data, signature } = body;
+      const { data, signature } = body;
 
-    const isValid = this.liqpayService.verifySignature(data, signature);
-    if (!isValid) {
-      return { status: 'invalid signature' };
-    }
+      const isValid = this.liqpayService.verifySignature(data, signature);
+      if (!isValid) {
+          return { status: 'invalid signature' };
+      }
 
-    const decoded = JSON.parse(Buffer.from(data, 'base64').toString('utf-8'));
+      const decoded = JSON.parse(Buffer.from(data, 'base64').toString('utf-8'));
 
-    if (decoded.status === 'success' || decoded.status === 'sandbox') {
-      const appointmentId = decoded.order_id;
-      await this.appointmentsService.markAsPaid(appointmentId);
-    }
+      if (decoded.status === 'success' || decoded.status === 'sandbox') {
+          const appointmentId = decoded.order_id;
+          try {
+              await this.appointmentsService.markAsPaid(appointmentId);
+              return { status: 'ok' };
+          } catch (error) {
+              return { status: 'error', message: error.message };
+          }
+      }
 
-    return { status: 'ok' };
+      return { status: 'payment not successful' };
   }
 
   @Get('generate')
