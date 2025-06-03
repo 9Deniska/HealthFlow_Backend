@@ -11,6 +11,7 @@ import { User } from '../../users/entities/user.entity';
 
 export enum AppointmentStatus {
   BUSY = 'busy',
+  COMPLETED = 'completed',
   UNAVAILABLE = 'unavailable',
 }
 
