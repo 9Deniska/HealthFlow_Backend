@@ -26,6 +26,11 @@ export class MedicalRecordsController {
     return this.medicalRecordsService.create(createMedicalRecordDto);
   }
 
+  @Get()
+  async findAllMedicalCards() {
+    return this.medicalRecordsService.findAll();
+  }
+
   @Get(':id')
   async findAllMedicalCardsForClient(
     @Param('id', ParseIntPipe) clientId: number,

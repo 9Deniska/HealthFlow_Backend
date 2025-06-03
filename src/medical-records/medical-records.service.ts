@@ -23,6 +23,12 @@ export class MedicalRecordsService {
     return this.medicalRecordsRepo.save(newMedicalRecord);
   }
 
+  async findAll(): Promise<MedicalRecord[]> {
+    return this.medicalRecordsRepo.find({
+      relations: ['client', 'doctor', 'appointment'], // Load related entities
+    });
+  }
+
   async findOne(id: number): Promise<MedicalRecord> {
     const medicalRecord = await this.medicalRecordsRepo.findOne({
       where: { medical_record_id: id },
