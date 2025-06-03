@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UseGuards,
   ValidationPipe,
@@ -14,7 +15,7 @@ import {
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard'; // Assuming you want to protect these routes
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { Patch } from '@nestjs/common';
+import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 // Add RolesGuard and @Roles if needed for specific endpoints
 
 @Controller('appointments') // Path as per your request
@@ -44,6 +45,14 @@ export class AppointmentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.appointmentsService.remove(id);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe()) updateAppointmentDto: UpdateAppointmentDto,
+  ) {
+    return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
   @Patch()
