@@ -22,7 +22,6 @@ import { DoctorsService } from '../doctors/doctors.service';
 import { CreateDoctorDto } from '../doctors/dto/create-doctor.dto';
 import { FavoriteDoctorsService } from '../favorite-doctors/favorite-doctors.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRole } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -42,7 +41,6 @@ export class UsersController {
   }
 
   @Get('clients')
-  @Roles(UserRole.MANAGER, UserRole.MODERATOR)
   async getClients() {
     return this.usersService.findAllClients();
   }
